@@ -74,8 +74,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="server.lua">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Include="server.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

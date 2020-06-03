@@ -11,6 +11,10 @@ using NLua;
 using System.Threading;
 using LiteNetLib.Layers;
 using dreamhost.lua;
+using DiscUtils.Fat;
+using DiscUtils;
+using DiscUtils.Raw;
+using DiscUtils.Partitions;
 
 namespace dreamhost
 {
@@ -31,15 +35,8 @@ namespace dreamhost
             if (!File.Exists("eula.toggle"))
             {
                 Console.WriteLine("DREAMHOST LICENSE");
-                Console.WriteLine(@"Copyright 2020-2021 Ryelow & Psychosis Interactive
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-The Software shall be used for Good, not Evil.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.");
+                Console.WriteLine("Copyright 2020-2021 Ryelow & Psychosis Interactive\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nThe Software shall be used for Good, not Evil.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.");
+                //typicalname did 9/11
                 Console.WriteLine("Press any key to continue.");
                 Console.ReadKey();
                 Console.WriteLine();
@@ -51,6 +48,12 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         }
         void MainC(string[] args)
         {
+            Disk disk = new Disk("server.bin");
+            PartitionTable partitions = disk.Partitions;
+            PartitionInfo fs_pi = partitions[0];
+            FatFileSystem fs = new FatFileSystem(fs_pi.Open());
+            PartitionInfo mfs_pi = partitions[1];
+            FatFileSystem mfs = new FatFileSystem(mfs_pi.Open());
             svtime = DateTime.Now.Ticks;
             Console.WriteLine("Starting...");
             netListener = new EventBasedNetListener();
@@ -68,7 +71,11 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
             lua.LoadCLRPackage();
             lua.DebugHook += Lua_DebugHook;
-            string code = File.ReadAllText("server.lua");
+            SparseStream stream = fs.OpenFile("lua\\main.lua", FileMode.Open, FileAccess.Read);
+            byte[] data = new byte[stream.Length];
+            stream.Read(data, 0, data.Length);
+            string code = Encoding.ASCII.GetString(data);
+            stream.Close();
             lua["netwriter"] = new NetDataWriter();
             lua["netserver"] = client;
             lua["DataModel"] = gameInstance;
