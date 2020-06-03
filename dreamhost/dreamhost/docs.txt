@@ -1,0 +1,105 @@
+﻿Instance
+	Methods
+		Instance New(string name) Creates new object of the same type, default parented to this
+		Instance New(params object[] param) Creates new object with custom parameters
+		Instance New(string name, Instance parent) Creates new object, sets its parent to parent
+		Instance New(Instance parent, params object[] param) Creates new object, sets it parent to parent and with custom parameters
+		void IterateChildren(LuaFunction function) Calls function with an instance, going through the children of this instance
+		Instance FindFirstChild(string name) Finds the first child in the objects Children with a name of name
+		Instance C(string name) See FindFirstChild(string name) (alias)
+		void Destroy() Removes this object and all of its children, sets its name to [DISPOSED] and is removed from its parent (DO NOT CALL ON DataModel)
+		string ToString() Returns name
+	Variables
+		public Instance Parent The parent of this instance
+		public List<Instance> Children All the children of this instance
+		public string Name The name of this instance
+	
+Factory -- derived from Instance, see Instance
+	Methods
+		
+	Variables
+
+	Notes
+		Shouldnt be used by itself. The Factories Factory which is automatically created inside DataModel is used to store all auto created Factories.
+
+CharacterFactory -- derived from Factory, see Factory
+	Methods
+		Player NewPlayer(string name, NetPeer peer) Creates a new Player, which contains a Character class you can use to send data to the Client. NetPeer is found as the first argument to peerconnect(peer), the second argument to act(action,peer) and the first argument to peerdiscconect.
+		Client NewClient(string name, NetPeer peer) Creates a new Client, which contains info such as the MTU, Ping and RemoteTime in ticks.
+	Variables
+		
+	Notes
+		Shouldnt be created in user code.
+
+GameLibrary -- dervied from Factory, see Factory
+	Methods
+		Random GenerateRandom(int seed) Generates a new Random with seed. Use the Random then Next(int min, int max) to get a random integer.
+		int FindEntropy() Finds random Entropy, returning a "seed".
+		void Iterate(object[] table, LuaFunction function) Iterates through table, calling the LuaFunction function with the first argument being the value found.
+		void IterateList(List<object> table, LuaFunction function) See Iterate.
+		void Debug(string text) Used to print debug text to the server.
+	Variables
+		LuaMath math
+	Notes
+		Shouldnt be created in user code.
+
+MetaInstance -- derived from Instance, see Instance
+	Methods
+
+	Variables
+		string Value
+	Notes
+		Planned to be used for settings.
+
+NetObject -- derived from Instance, see Instance
+	Methods
+		void Drop() Is meant to either drop the connection or drop all connected clients, due to NetObject being a base Networked Object it does nothing
+		void Destroy() Override from Instance, calls Drop() then does the base Destroy in instance
+	Variables
+		public EventBasedNetListener listener
+		public NetManager manager
+	Notes
+		Shouldnt be used by itself.
+		Could potentinally be used for custom servers. But if used it will not work with any other classes.
+
+Client -- derived from NetObject, see NetObject
+	Methods
+		void Drop() Override from Instance, calls Drop(string reason) and gives the receiving client the reason "Your connection has been dropped."
+		void Drop(string reason) Kicks the client out and gives them reason.
+		void Destroy() Override from Instance, calls Drop() then does the base Destroy in instance
+	Variables
+		public NetPeer peer
+	Notes
+		Created by CharacterFactory.
+
+Player -- derived from Client, see Client
+	Methods
+		Character GetChar() Gets the Character of this Player.
+		void SetGameTitle(string title) Set the title of the form the Player sees.
+	Variables
+		private Character character
+	Notes
+		Created by CharacterFactory.
+
+LuaMath
+	Sin(x)
+	Cos(x)
+	Tan(x)
+	Pow(x,y)
+	Round(x)
+	Pi()
+	E()
+	Min(x,y)
+	Max(x,y)
+	NewVector(x,param double[] d)
+
+Vector
+	x
+	int dimensions
+
+Vector2D -- inherited from Vector
+	y
+
+Vector3D -- inherited from Vector
+	y
+	z
