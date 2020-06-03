@@ -59,7 +59,7 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
             iclient = new NetManager(inetListener);
             lua = new Lua();
             gameInstance = new Instance("DataModel");
-            Instance factoryContainer = new Instance("Factories");
+            Factory factoryContainer = new Factory("Factories");
             factoryContainer.Parent = gameInstance;
             CharacterFactory characterFactory = new CharacterFactory("CharacterFactory");
             characterFactory.Parent = factoryContainer;
