@@ -1,12 +1,4 @@
 ``` 
-____  _____ _____ _____ _____ _____ _____ _____ _____ _____ _____ 
-|    \| __  |   __|  _  |     |     |  _  |   __|_   _|   __| __  |
-|  |  |    -|   __|     | | | |   --|     |__   | | | |   __|    -|
-|____/|__|__|_____|__|__|_|_|_|_____|__|__|_____| |_| |_____|__|__|
-      Dreamcaster                                   v1.0.0.0                
-Designed for DHP1
-By Ryelow
-Dreamcaster
 This is free and unencumbered software released into the public domain.
 Anyone is free to copy, modify, publish, use, compile, sell, or
 distribute this software, either in source code form or as a compiled
